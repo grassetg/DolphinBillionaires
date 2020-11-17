@@ -9,13 +9,13 @@ class DynAmountLineContainer:
     currency: DynAmountLineCurrency
     """
 
-    def __init__(self, asset_, currency_):
+    def __init__(self, asset_: DynAmountLineAsset, currency_: DynAmountLineCurrency):
 
-        if not type(asset_) is DynAmountLineAsset:
-            raise TypeError("A DynAmountLineContainer object's asset must be a DynAmountLineAsset object")
+        if not asset_ and not currency_:
+            raise Exception("Either asset or currency must be set in DynAmountLineCurrency.")
 
-        if not type(currency_) is DynAmountLineCurrency:
-            raise TypeError("A DynAmountLineContainer object's currency must be a DynAmountCurrency object")
+        elif asset_ and currency_:
+            raise Exception("Cannot have both asset and currency in one DynAmountLineCurrency.")
 
         self.asset = asset_
         self.currency = currency_

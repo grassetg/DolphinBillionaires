@@ -1,4 +1,3 @@
-
 class DynAmountLineCurrency:
     """
     Valeur monétaire du portefeuille de composition historique\n
@@ -6,10 +5,6 @@ class DynAmountLineCurrency:
     currency: Devise. L'identifiant est le code ISO 4217 de la devise
     """
 
-    def __init__(self, amount_, currency_="EUR"):
-
-        if not type(amount_) is float:
-            raise Warning("A DynAmountLineCurrency object's amount should be a double/float. Was " + str(type(amount_)))
-
+    def __init__(self, amount_: float, currency_: str = "EUR"):
         self.currency = currency_
         self.amount = amount_
