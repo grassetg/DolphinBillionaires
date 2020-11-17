@@ -1,3 +1,5 @@
+import json
+
 from models.dynAmountLineAsset import DynAmountLineAsset
 from models.dynAmountLineCurrency import DynAmountLineCurrency
 
@@ -9,7 +11,7 @@ class DynAmountLineContainer:
     currency: DynAmountLineCurrency
     """
 
-    def __init__(self, asset_: DynAmountLineAsset, currency_: DynAmountLineCurrency):
+    def __init__(self, asset_: DynAmountLineAsset = None, currency_: DynAmountLineCurrency = None):
 
         if not asset_ and not currency_:
             raise Exception("Either asset or currency must be set in DynAmountLineCurrency.")
@@ -19,3 +21,22 @@ class DynAmountLineContainer:
 
         self.asset = asset_
         self.currency = currency_
+
+    @staticmethod
+    def jsonToDynAmountLineContainer(jsonContainer):
+        dictionary = dict()
+
+        if type(jsonContainer) is str:
+            dictionary = json.loads(jsonContainer)
+        elif type(jsonContainer) is dict:
+            dictionary = jsonContainer
+
+        if dictionary.keys().__contains__("currency"):
+
+            currency = DynAmountLineCurrency.jsonToDynAmountLineCurrency(dictionary["currency"])
+            return DynAmountLineContainer(None, currency)
+
+        else:
+
+            asset = DynAmountLineAsset.jsonToDynAmountLineAsset(dictionary['asset'])
+            return DynAmountLineContainer(asset, None)

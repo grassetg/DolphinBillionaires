@@ -1,3 +1,4 @@
+import json
 import string
 from typing import List
 
@@ -13,13 +14,10 @@ class Portfolio:
     type: Type de portfolio DynAmount : soit "front" soit "back"
     """
 
-    def __init__(self, label_: str, type_: str, values_: List[DynAmountLineContainer], currency_: str = "EUR"):
+    def __init__(self, label_: str, values_: List[DynAmountLineContainer], currency_: str = "EUR", type_: str = None):
 
         if type_ != "front" and type_ != "ack":
             raise Exception("A portfolio's type must be \"front\" or \"back\"?")
-
-        if not type(label_) is string:
-            raise TypeError("A portfolio's label must be a string.")
 
         for ele in values_:
             if not type(ele) is DynAmountLineContainer:
@@ -28,4 +26,22 @@ class Portfolio:
         self.label = label_
         self.currency = currency_
         self.type = type_
-        self.values = {"2013-06-14": values_}
+        self.values = {"2016-06-01": values_}
+
+    @staticmethod
+    def jsonToPortfolio(jsonPortfolio):
+        dictionary = dict()
+
+        if type(jsonPortfolio) is str:
+            dictionary = json.loads(jsonPortfolio)
+        elif type(jsonPortfolio) is dict:
+            dictionary = jsonPortfolio
+
+        values = []
+        for value in dictionary["values"]["2016-06-01"]:
+            container = DynAmountLineContainer.jsonToDynAmountLineContainer(value)
+            values.append(container)
+
+        portfolio = Portfolio(dictionary["label"], values, dictionary.get("currency", "EUR"),
+                              dictionary.get("type", None))
+        return portfolio
