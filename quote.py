@@ -5,6 +5,13 @@ Created on Fri Nov 13 23:46:39 2020
 @author: 33667
 """
 
+import requests
+import urllib3
+import json
+
+URL = 'https://dolphin.jump-technology.com:8443/api/v1'
+AUTH = ('EPITA_GROUPE3', 'X3fYKy2ehbgBdr4B')
+
 class Quote:
     def __init__(self, close, coupon, date, gross, high, low, nav, ope, pl, ret, volume):
         self.close = close
@@ -17,109 +24,47 @@ class Quote:
         self.pl = pl
         self.ret = ret
         self.volume = volume
+        
 
-#gets      
-    def get_close(self):
-        return self.close
+def get_assets(endpointApi, date=None, full_response=False):
+    payload = {'date': date, 'fullResponse': full_response}
+    res = requests.get(URL + endpointApi,
+                       params=payload,
+                       auth=AUTH,
+                       verify=False)
+    return res.content.decode('utf-8')
+
+def get_quotes(endpointApi, data_id, quote, date=None, full_response=False):
+    payload = {'id': int(data_id), 'start_quotes': "1985-04-12", 'end_quotes': "2020-11-17"}
+    res = requests.get(URL + endpointApi + data_id + quote,
+                       params=payload,
+                       auth=AUTH,
+                       verify=False)
+
+    return res.content.decode('utf-8')
     
-    def get_coupon(self):
-        return self.coupon
+def asset_to_quotes(asset):
+    obj_quotes = [] 
+    result = get_quotes("/asset/", asset['ASSET_DATABASE_ID']['value'], "/quote")
+    quotes = json.loads(result)
+    for quote in quotes:
+        print(quote)
+        new_quote = Quote(quote['close'], quote['coupon'], quote['date'], quote['gross'], quote['high'], quote['low'], quote['nav'], quote['open'], quote['pl'], quote['return'], quote['volume'])
+        obj_quotes.append(new_quote)
     
-    def get_date(self):
-        return self.date
+    return obj_quotes
+
+
+#------------ GET ASSETS --------------
+actif = get_assets("/asset")
+allActif = json.loads(actif)
+#print("Mes actifs")
+#print(actif)
+
+#------------ GET QUOTES -------------
+print("Mes quotes")
+allQuotes = asset_to_quotes(allActif[0])
+print(allQuotes)
+
+            
     
-    def get_gross(self):
-        return self.gross
-    
-    def get_high(self):
-        return self.high
-    
-    def get_low(self):
-        return self.low
-    
-    def get_nav(self):
-        return self.nav
-    
-    def get_ope(self):
-        return self.ope
-    
-    def get_pl(self):
-        return self.pl
-    
-    def get_ret(self):
-        return self.ret
-    
-    def get_volume(self):
-        return self.volume 
-    
-#sets
-    def set_close(self, close):
-        self.close = close
-    
-    def set_coupon(self, coupon):
-        self.coupon = coupon
-        
-    def set_date(self, date):
-        self.date = date
-        
-    def set_gross(self, gross):
-        self.gross = gross
-    
-    def set_high(self, high):
-        self.high = high
-        
-    def set_low(self, low):
-        self.low = low
-        
-    def set_nave(self, nave):
-        self.nave = nave
-    
-    def set_ope(self, ope):
-        self.ope = ope
-        
-    def set_pl(self, pl):
-        self.pl = pl
-        
-    def set_ret(self, ret):
-        self.ret = ret
-    
-    def set_volume(self, volume):
-        self.volume = volume
-        
-        
-#dels     
-    def del_id(self):
-        del(self.id)
-    
-    def del_close(self):
-        del(self.close)
-    
-    def del_coupon(self):
-        del(self.coupon)
-        
-    def del_date(self):
-        del(self.date)
-        
-    def del_gross(self, gross):
-        del(self.gross)
-    
-    def del_high(self):
-        del(self.high)
-        
-    def del_low(self):
-        del(self.low)
-        
-    def del_nave(self):
-        del(self.nave)
-    
-    def del_ope(self):
-        del(self.ope)
-        
-    def del_pl(self):
-        del(self.pl)
-        
-    def del_ret(self):
-        del(self.ret)
-    
-    def del_volume(self):
-        del(self.volume)
