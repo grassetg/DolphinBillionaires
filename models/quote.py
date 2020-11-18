@@ -6,6 +6,7 @@ Created on Fri Nov 13 23:46:39 2020
 """
 
 import json
+from apiTools import *
 
 class Quote:
     def __init__(self, close, coupon, date, gross, high, low, nav, ope, pl, ret, volume):
@@ -35,7 +36,7 @@ class Quote:
     
 def asset_to_quotes(asset):
     obj_quotes = [] 
-    result = get_quotes("/asset/", asset['ASSET_DATABASE_ID']['value'], "/quote")
+    result = get_quotes(asset['ASSET_DATABASE_ID']['value'])
     quotes = json.loads(result)
 
     for quote in quotes:
