@@ -2,7 +2,7 @@ from typing import List
 
 import requests
 
-from models import Asset
+from models import *
 from models.ratioParamMultiAsset import RatioParamMultiAsset
 from vars import URL, AUTH
 
