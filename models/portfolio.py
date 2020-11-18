@@ -28,20 +28,20 @@ class Portfolio:
         self.type = type_
         self.values = {"2016-06-01": values_}
 
-    @staticmethod
-    def jsonToPortfolio(jsonPortfolio):
-        dictionary = dict()
 
-        if type(jsonPortfolio) is str:
-            dictionary = json.loads(jsonPortfolio)
-        elif type(jsonPortfolio) is dict:
-            dictionary = jsonPortfolio
+def jsonToPortfolio(jsonPortfolio):
+    dictionary = dict()
 
-        values = []
-        for value in dictionary["values"]["2016-06-01"]:
-            container = DynAmountLineContainer.jsonToDynAmountLineContainer(value)
-            values.append(container)
+    if type(jsonPortfolio) is str:
+        dictionary = json.loads(jsonPortfolio)
+    elif type(jsonPortfolio) is dict:
+        dictionary = jsonPortfolio
 
-        portfolio = Portfolio(dictionary["label"], values, dictionary.get("currency", "EUR"),
-                              dictionary.get("type", None))
-        return portfolio
+    values = []
+    for value in dictionary["values"]["2016-06-01"]:
+        container = DynAmountLineContainer.jsonToDynAmountLineContainer(value)
+        values.append(container)
+
+    portfolio = Portfolio(dictionary["label"], values, dictionary.get("currency", "EUR"),
+                          dictionary.get("type", None))
+    return portfolio

@@ -12,18 +12,18 @@ class DynAmountLineCurrency:
         self.currency = currency_
         self.amount = amount_
 
-    @staticmethod
-    def jsonToDynAmountLineCurrency(jsonCurrency):
-        dictionary = dict()
 
-        if type(jsonCurrency) is str:
-            dictionary = json.loads(jsonCurrency)
-        elif type(jsonCurrency) is dict:
-            dictionary = jsonCurrency
+def jsonToDynAmountLineCurrency(jsonCurrency):
+    dictionary = dict()
 
-        if dictionary.keys().__contains__("currency"):
-            currency = DynAmountLineCurrency(dictionary['amount'], dictionary["currency"])
-        else:
-            currency = DynAmountLineCurrency(dictionary['amount'])
+    if type(jsonCurrency) is str:
+        dictionary = json.loads(jsonCurrency)
+    elif type(jsonCurrency) is dict:
+        dictionary = jsonCurrency
 
-        return currency
+    if dictionary.keys().__contains__("currency"):
+        currency = DynAmountLineCurrency(dictionary['amount'], dictionary["currency"])
+    else:
+        currency = DynAmountLineCurrency(dictionary['amount'])
+
+    return currency

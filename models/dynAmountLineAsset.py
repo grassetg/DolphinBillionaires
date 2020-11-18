@@ -19,15 +19,15 @@ class DynAmountLineAsset:
         self.asset = asset_
         self.quantity = quantity_
 
-    @staticmethod
-    def jsonToDynAmountLineAsset(jsonAsset):
-        dictionary = None
 
-        if type(jsonAsset) is str:
-            dictionary = json.loads(jsonAsset)
-        elif type(jsonAsset) is dict:
-            dictionary = jsonAsset
+def jsonToDynAmountLineAsset(jsonAsset):
+    dictionary = None
 
-        asset = DynAmountLineAsset(dictionary['asset'], dictionary['quantity'])
+    if type(jsonAsset) is str:
+        dictionary = json.loads(jsonAsset)
+    elif type(jsonAsset) is dict:
+        dictionary = jsonAsset
 
-        return asset
+    asset = DynAmountLineAsset(dictionary['asset'], dictionary['quantity'])
+
+    return asset

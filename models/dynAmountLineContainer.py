@@ -22,21 +22,43 @@ class DynAmountLineContainer:
         self.asset = asset_
         self.currency = currency_
 
-    @staticmethod
-    def jsonToDynAmountLineContainer(jsonContainer):
-        dictionary = dict()
 
-        if type(jsonContainer) is str:
-            dictionary = json.loads(jsonContainer)
-        elif type(jsonContainer) is dict:
-            dictionary = jsonContainer
+def jsonToDynAmountLineContainer(jsonContainer):
+    dictionary = dict()
 
-        if dictionary.keys().__contains__("currency"):
+    if type(jsonContainer) is str:
+        dictionary = json.loads(jsonContainer)
+    elif type(jsonContainer) is dict:
+        dictionary = jsonContainer
 
-            currency = DynAmountLineCurrency.jsonToDynAmountLineCurrency(dictionary["currency"])
-            return DynAmountLineContainer(None, currency)
+    if dictionary.keys().__contains__("currency"):
 
-        else:
+        currency = DynAmountLineCurrency.jsonToDynAmountLineCurrency(dictionary["currency"])
+        return DynAmountLineContainer(None, currency)
 
-            asset = DynAmountLineAsset.jsonToDynAmountLineAsset(dictionary['asset'])
-            return DynAmountLineContainer(asset, None)
+    else:
+
+        asset = DynAmountLineAsset.jsonToDynAmountLineAsset(dictionary['asset'])
+        return DynAmountLineContainer(asset, None)
+
+
+def createCurrencyContainer(amount_: float, currency_: str = "EUR"):
+    """
+    :param amount_: amount invested
+    :param currency_: iso code of the currency
+    :return: the matching dynAmountLineContainer with currency
+    """
+
+    amountLineCurrency = DynAmountLineCurrency(amount_, currency_)
+    return DynAmountLineContainer(None, amountLineCurrency)
+
+
+def createAssetContainer(asset_: int, quantity_: float):
+    """
+    :param asset_: the asset's db id
+    :param quantity_: asset quantity
+    :return: the matching dynAmountLineContainer with asset
+    """
+
+    amountLineAsset = DynAmountLineAsset(asset_, quantity_)
+    return DynAmountLineContainer(amountLineAsset, None)
