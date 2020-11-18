@@ -22,21 +22,21 @@ class DynAmountLineContainer:
         self.asset = asset_
         self.currency = currency_
 
-    @staticmethod
-    def jsonToDynAmountLineContainer(jsonContainer):
-        dictionary = dict()
 
-        if type(jsonContainer) is str:
-            dictionary = json.loads(jsonContainer)
-        elif type(jsonContainer) is dict:
-            dictionary = jsonContainer
+def jsonToDynAmountLineContainer(jsonContainer):
+    dictionary = dict()
 
-        if dictionary.keys().__contains__("currency"):
+    if type(jsonContainer) is str:
+        dictionary = json.loads(jsonContainer)
+    elif type(jsonContainer) is dict:
+        dictionary = jsonContainer
 
-            currency = DynAmountLineCurrency.jsonToDynAmountLineCurrency(dictionary["currency"])
-            return DynAmountLineContainer(None, currency)
+    if dictionary.keys().__contains__("currency"):
 
-        else:
+        currency = DynAmountLineCurrency.jsonToDynAmountLineCurrency(dictionary["currency"])
+        return DynAmountLineContainer(None, currency)
 
-            asset = DynAmountLineAsset.jsonToDynAmountLineAsset(dictionary['asset'])
-            return DynAmountLineContainer(asset, None)
+    else:
+
+        asset = DynAmountLineAsset.jsonToDynAmountLineAsset(dictionary['asset'])
+        return DynAmountLineContainer(asset, None)
