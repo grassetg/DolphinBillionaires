@@ -1,5 +1,8 @@
+from typing import List
+
 import requests
 
+from models import Asset
 from models.ratioParamMultiAsset import RatioParamMultiAsset
 from vars import URL, AUTH
 
@@ -90,16 +93,16 @@ def put_portfolio(portfolioId, portfolio):
     return res.content.decode('utf-8')
 
 
-def get_ratios():
-    parameters = {}
-    res = requests.put(URL + "/ratio",
-                       params=parameters,
+def get_ratios(endpointApi='/ratio', date=None, full_response=False):
+    payload = {'date': date, 'fullResponse': full_response}
+    res = requests.get(URL + endpointApi,
+                       params=payload,
                        auth=AUTH,
                        verify=False)
 
     if res.status_code != 200:
         errorHandling(res)
-        return None
+        return res
 
     return res.content.decode('utf-8')
 
@@ -118,6 +121,14 @@ def post_ratios(ratio: RatioParamMultiAsset, fullResponse: bool = False):
 
     return res.content.decode('utf-8')
 
+
+def get_sharpe(asset: List[Asset], fullResponse: bool =False):
+    sharpe = {
+        id: 12,
+        type: "Ratio",
+        name: "Sharpe",
+    }
+    ratioParam = RatioParamMultiAsset()
 
 def errorHandling(res):
     print('(error): The http communication failed with code ' + str(res.status_code))
