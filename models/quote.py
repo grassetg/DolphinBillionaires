@@ -5,12 +5,7 @@ Created on Fri Nov 13 23:46:39 2020
 @author: 33667
 """
 
-import requests
-import urllib3
 import json
-
-URL = 'https://dolphin.jump-technology.com:8443/api/v1'
-AUTH = ('EPITA_GROUPE3', 'X3fYKy2ehbgBdr4B')
 
 class Quote:
     def __init__(self, close, coupon, date, gross, high, low, nav, ope, pl, ret, volume):
@@ -36,24 +31,7 @@ class Quote:
         print("pl " + str(self.pl))
         print("return " + str(self.ret))
         print("close " + str(self.volume))
-        
 
-def get_assets(endpointApi, date=None, full_response=False):
-    payload = {'date': date, 'fullResponse': full_response}
-    res = requests.get(URL + endpointApi,
-                       params=payload,
-                       auth=AUTH,
-                       verify=False)
-    return res.content.decode('utf-8')
-
-def get_quotes(endpointApi, data_id, quote, date=None, full_response=False):
-    payload = {'id': int(data_id), 'start_quotes': "1985-04-12", 'end_quotes': "2020-11-17"}
-    res = requests.get(URL + endpointApi + data_id + quote,
-                       params=payload,
-                       auth=AUTH,
-                       verify=False)
-
-    return res.content.decode('utf-8')
     
 def asset_to_quotes(asset):
     obj_quotes = [] 
@@ -78,21 +56,3 @@ def asset_to_quotes(asset):
 
     return obj_quotes
 
-#------------ GET ASSETS --------------
-actif = get_assets("/asset")
-allActif = json.loads(actif)
-#print("Mes actifs")
-#print(actif)
-
-#------------ GET QUOTES -------------
-print("Mes quotes")
-allQuotes = asset_to_quotes(allActif[1])
-
-allQuotes[0].print_info()
-
-#for elt in allQuotes:
-#    elt.print_info()
-   
-#print("len of my quote list " + str(len(allQuotes)))
-            
-    
