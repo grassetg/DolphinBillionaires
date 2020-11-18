@@ -14,7 +14,7 @@ class RatioParamMultiAsset:
 
     def __init__(self, ratio_: List[int], asset_: List[int], benchmark_: int = None, start_date_: str = None,
                  end_date_: str = None, frequency_: str = None):
-        if frequency_ != "daily" and frequency_ != "monthly" and frequency_ != "weekly" and frequency_ != "yearly":
+        if frequency_ and  frequency_ != "daily" and frequency_ != "monthly" and frequency_ != "weekly" and frequency_ != "yearly":
             raise ValueError("Ratio frequency must be one of daily/monthly/weekly/yearly.")
 
         self.ratio = ratio_

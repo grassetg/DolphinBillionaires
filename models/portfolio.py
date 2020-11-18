@@ -2,7 +2,7 @@ import json
 import string
 from typing import List
 
-from models.dynAmountLineContainer import DynAmountLineContainer
+from models.dynAmountLineContainer import DynAmountLineContainer, jsonToDynAmountLineContainer
 
 
 class Portfolio:
@@ -28,6 +28,9 @@ class Portfolio:
         self.type = type_
         self.values = {"2016-06-01": values_}
 
+    def toJson(self):
+        return json.dumps(self, default=lambda o: o.__dict__)
+
 
 def jsonToPortfolio(jsonPortfolio):
     dictionary = dict()
@@ -39,7 +42,7 @@ def jsonToPortfolio(jsonPortfolio):
 
     values = []
     for value in dictionary["values"]["2016-06-01"]:
-        container = DynAmountLineContainer.jsonToDynAmountLineContainer(value)
+        container = jsonToDynAmountLineContainer(value)
         values.append(container)
 
     portfolio = Portfolio(dictionary["label"], values, dictionary.get("currency", "EUR"),
