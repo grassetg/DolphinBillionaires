@@ -1,7 +1,7 @@
 import json
 
-from models.dynAmountLineAsset import DynAmountLineAsset
-from models.dynAmountLineCurrency import DynAmountLineCurrency
+from models.dynAmountLineAsset import *
+from models.dynAmountLineCurrency import *
 
 
 class DynAmountLineContainer:
@@ -32,13 +32,11 @@ def jsonToDynAmountLineContainer(jsonContainer):
         dictionary = jsonContainer
 
     if dictionary.keys().__contains__("currency"):
-
-        currency = DynAmountLineCurrency.jsonToDynAmountLineCurrency(dictionary["currency"])
+        currency = jsonToDynAmountLineCurrency(dictionary["currency"])
         return DynAmountLineContainer(None, currency)
 
     else:
-
-        asset = DynAmountLineAsset.jsonToDynAmountLineAsset(dictionary['asset'])
+        asset = jsonToDynAmountLineAsset(dictionary['asset'])
         return DynAmountLineContainer(asset, None)
 
 

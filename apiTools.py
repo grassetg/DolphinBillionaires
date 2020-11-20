@@ -2,8 +2,9 @@ from typing import List
 
 import requests
 
-from models import Asset
+from models.dynAmountLineContainer import DynAmountLineContainer
 from models.ratioParamMultiAsset import RatioParamMultiAsset
+from safePortfolio import enough_assets
 from vars import URL, AUTH
 
 
@@ -79,7 +80,7 @@ def get_portfolio(portfolioId):
 
 
 def put_portfolio(portfolioId, portfolio):
-    parameters = {}
+    parameters = portfolio
     res = requests.put(URL + "/portfolio/" + str(portfolioId) + "/dyn_amount_compo",
                        params=parameters,
                        auth=AUTH,

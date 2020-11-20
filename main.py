@@ -3,12 +3,13 @@ import json
 from models import *
 from apiTools import *
 from vars import *
-from safePortfolio import *
+from safePortfolio import enough_assets
+
 
 # ------------ GET ASSETS --------------
 #actif = get_assets()
 #allActif = json.loads(actif)
-
+        
 # print("Mes actifs")
 # print(actif)
 
@@ -23,8 +24,13 @@ from safePortfolio import *
 # print("len of my quote list " + str(len(allQuotes)))
 
 # ------------ GET PORTFOLIO -------------
+#compo = json.dumps({"label":"EPITA_PTF_3","currency":{"code":"EUR"},"type":"front","values":{"2016-06-01":[{"asset":{"asset":1845,"quantity":1.0}}]}})
+#put_portfolio(1822, compo)
 port = get_portfolio(PORTFOLIO_ID)
-my_port = Portfolio(jsonToPortfolio(port))
-print(my_port)
-enough_asset(my_port)
+json_port = json.loads(port)
+value = json_port['values']["2016-06-01"]
+print(value)
+print(enough_assets(value))
+
+#{"label":"EPITA_PTF_3","currency":{"code":"EUR"},"type":"front","values":{"2016-01-16":[{"asset":{"asset":1845,"quantity":1.0}}]}}
 

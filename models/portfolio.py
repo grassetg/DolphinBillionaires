@@ -32,7 +32,7 @@ class Portfolio:
         return json.dumps(self, default=lambda o: o.__dict__)
 
 
-def jsonToPortfolio(jsonPortfolio):
+def jsonToPortfolio(jsonPortfolio, date: str = "2016-06-01"):
     dictionary = dict()
 
     if type(jsonPortfolio) is str:
@@ -41,7 +41,7 @@ def jsonToPortfolio(jsonPortfolio):
         dictionary = jsonPortfolio
 
     values = []
-    for value in dictionary["values"]["2016-06-01"]:
+    for value in dictionary["values"][date]:
         container = jsonToDynAmountLineContainer(value)
         values.append(container)
 
