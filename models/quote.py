@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov 13 23:46:39 2020
-
-@author: 33667
-"""
-
 import json
 from apiTools import *
 
@@ -34,9 +27,14 @@ class Quote:
         print("close " + str(self.volume))
 
     
-def asset_to_quotes(asset):
-    obj_quotes = [] 
-    result = get_quotes(asset['ASSET_DATABASE_ID']['value'])
+def asset_to_quotes(asset, in_portfolio):
+    obj_quotes = []
+    print(asset)
+    if in_portfolio:
+        result = get_quotes(asset)
+    else:
+        result = get_quotes(asset['ASSET_DATABASE_ID']['value'])
+        
     quotes = json.loads(result)
 
     for quote in quotes:

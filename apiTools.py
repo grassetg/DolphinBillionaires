@@ -4,7 +4,6 @@ import requests
 
 from models.dynAmountLineContainer import DynAmountLineContainer
 from models.ratioParamMultiAsset import RatioParamMultiAsset
-from safePortfolio import enough_assets
 from vars import URL, AUTH
 
 
