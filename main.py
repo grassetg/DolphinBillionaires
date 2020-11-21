@@ -35,7 +35,7 @@ port = jsonToPortfolio(json_port)
 #print(value)
 #enough_assets(port)
 #is_uniq_compo(port)
-check_nav(PORTFOLIO_ID)
+print(check_nav(PORTFOLIO_ID))
 
 #{"label":"EPITA_PTF_3","currency":{"code":"EUR"},"type":"front","values":{"2016-01-16":[{"asset":{"asset":1845,"quantity":1.0}}]}}
 

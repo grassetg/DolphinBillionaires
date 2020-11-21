@@ -29,7 +29,7 @@ class Quote:
     
 def asset_to_quotes(asset, in_portfolio):
     obj_quotes = []
-    print(asset)
+
     if in_portfolio:
         result = get_quotes(asset)
     else:
