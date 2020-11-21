@@ -17,7 +17,7 @@ from safePortfolio import enough_assets
 #print("Mes quotes")
 #allQuotes = asset_to_quotes(allActif[1])
 #allQuotes[0].print_info()
-
+    
 # for elt in allQuotes:
 #    elt.print_info()
 
@@ -26,11 +26,12 @@ from safePortfolio import enough_assets
 # ------------ GET PORTFOLIO -------------
 #compo = json.dumps({"label":"EPITA_PTF_3","currency":{"code":"EUR"},"type":"front","values":{"2016-06-01":[{"asset":{"asset":1845,"quantity":1.0}}]}})
 #put_portfolio(1822, compo)
-port = get_portfolio(PORTFOLIO_ID)
-json_port = json.loads(port)
-value = json_port['values']["2016-06-01"]
-print(value)
-print(enough_assets(value))
+str_port = get_portfolio(PORTFOLIO_ID)
+json_port = json.loads(str_port)
+port = jsonToPortfolio(json_port)
+#print(value)
+enough_assets(port)
+is_uniq_compo(port)
 
 #{"label":"EPITA_PTF_3","currency":{"code":"EUR"},"type":"front","values":{"2016-01-16":[{"asset":{"asset":1845,"quantity":1.0}}]}}
 
