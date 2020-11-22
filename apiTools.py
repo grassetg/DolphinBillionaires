@@ -122,6 +122,16 @@ def post_ratios(ratio: RatioParamMultiAsset, fullResponse: bool = False):
     return res.content.decode('utf-8')
 
 
+def get_portfolio_sharpe(portfolio, porfolioDate, benchmark: int = None, start_date: str = None,
+                         end_date_: str = None, frequency_: str = None, fullResponse: bool = False):
+    assets = []
+    for container in portfolio.values[porfolioDate]:
+        if container.asset is not None:
+            assets.append(container.asset.asset)
+
+    return get_sharpe(assets, benchmark, start_date, end_date_, frequency_, fullResponse)
+
+
 def get_sharpe(asset: List[int], benchmark: int = None, start_date: str = None,
                end_date_: str = None, frequency_: str = None, fullResponse: bool = False):
     sharpeId = 12

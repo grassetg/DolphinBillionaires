@@ -1,44 +1,65 @@
 import json
+from random import randint
 
 from models import *
 from apiTools import *
 from vars import *
 from safePortfolio import *
+from copy import deepcopy
+from safePortfolio import enough_assets
+
+assets = json.loads(get_assets(("ASSET_DATABASE_ID", "asset_fund_info_decimalisation")))
+assets_id = []
+assets_quantity = {}
+nb_asset = len(assets)
+
+for i in range(nb_asset):
+    id = int(assets[i]["ASSET_DATABASE_ID"]["value"])
+    assets_id.append(id)
+    if "asset_fund_info_decimalisation" in assets[i]:
+        assets_quantity[id] = assets[i]["asset_fund_info_decimalisation"]["value"]
 
 
-# ------------ GET ASSETS --------------
-#actif = get_assets()
-#allActif = json.loads(actif)
-        
-# print("Mes actifs")
-# print(actif)
+def init_ptfs(nb: int = 50):
+    ptfs = []
+    for i in range(nb):
+        list_id = []
+        asset_id_copy = deepcopy(assets_id)
+        values = []
 
-# ------------ GET QUOTES -------------
-#print("Mes quotes")
-#print(allActif[0]['ASSET_DATABASE_ID']['value'])
-#allQuotes = asset_to_quotes(allActif[1], False)
-#allQuotes[0].print_info()
-    
-# for elt in allQuotes:
-#    elt.print_info()
+        for j in range(randint(15, 30)):
+            choice = randint(0, nb_asset - 1 - j)
+            asset_id = asset_id_copy[choice]
+            list_id.append(asset_id)
+            asset_id_copy.pop(choice)
 
-# print("len of my quote list " + str(len(allQuotes)))
+            if asset_id in assets_quantity:
+                quantity = assets_quantity[asset_id]
+            else:
+                quantity = 1
 
-# ------------ GET PORTFOLIO -------------
-compo = json.dumps({"label":"EPITA_PTF_3","currency":{"code":"EUR"},"type":"front","values":{"2015-06-01":[{"asset":{"asset":1845,"quantity":1.0}}]}})
-#put_portfolio(1822, compo)
-#str_port = get_portfolio(PORTFOLIO_ID)
+            container = createAssetContainer(asset_id, quantity)
+            values.append(container)
+        ptfs.append(Portfolio(PORTFOLIO_NAME, values, "EUR", "front"))
 
-#------------ CHECK PORTFOLIO ------------
-json_port = json.loads(compo)
-port = jsonToPortfolio(json_port, "2015-06-01")
-#print(value)
-enough_assets(port)
-is_uniq_compo(port)
-check_nav(PORTFOLIO_ID)
-check_actions(port)
+    return ptfs
 
 
+porfolios = init_ptfs(10)
 
-#{"label":"EPITA_PTF_3","currency":{"code":"EUR"},"type":"front","values":{"2016-01-16":[{"asset":{"asset":1845,"quantity":1.0}}]}}
 
+def get_best_candidate(portfolios):
+    notes = []
+    for portfolio in portfolios:
+        notes.append(get_portfolio_sharpe(portfolio, "2016-06-01"))
+
+    index = notes.index(max(notes))
+    print("all : " + str(notes))
+    print()
+    print("max : " + str(notes[index]))
+    return portfolios[index]
+
+
+print(get_best_candidate(porfolios))
+# creation du portefeuille
+# ptf = Portfolio(vars.PORTFOLIO_NAME, values_, currency_ , type_)
