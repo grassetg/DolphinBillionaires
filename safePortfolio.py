@@ -1,7 +1,7 @@
 import json
 
 from models.dynAmountLineAsset import DynAmountLineAsset
-from apiTools import get_portfolio
+from apiTools import get_portfolio, get_asset
 from models.portfolio import jsonToPortfolio
 from models.quote import asset_to_quotes
 from vars import *
@@ -51,6 +51,7 @@ def sum_nav(portfolio):
                 
     return (my_sum, my_assets)
 
+
 def check_nav(port_ID):
     str_port = get_portfolio(port_ID)
     json_port = json.loads(str_port)
@@ -59,19 +60,38 @@ def check_nav(port_ID):
     my_sum, my_assets = sum_nav(portfolio)
     for asset in my_assets:
         num = 0
-        print (asset)
         for nav, quantity in my_assets[asset]:
             num += nav * quantity
          
         pourcent = (num * 100) / my_sum       
-        print(pourcent)
         if  1 > pourcent or pourcent > 10:
             print("Le portefeuille ne respecte PAS la condition des navs")
             return False
         
     print("Le portefeuille respecte la condition des navs")
     return True
-               
+
+
+def check_actions(portfolio):
+    total_count = 0
+    action_count = 0
+    if "2016-06-01" in portfolio.values:
+        for elt in portfolio.values["2016-06-01"]:
+            total_count += 1
+            
+            str_asset = get_asset(elt.asset.asset)
+            json_asset = json.loads(str_asset)
+            if json_asset['TYPE'] == "STOCK":
+                action_count += 1
+                
+    if total_count == 0 or action_count / total_count < 0.5:
+        print("Il n'y a PAS au moins 50% d'action dans ce portefeuille")
+        return False
+
+    print("Il y a au moins 50% d'action dans ce portefeuille")
+    return True
+        
+                
            
            
            

@@ -3,7 +3,7 @@ import json
 from models import *
 from apiTools import *
 from vars import *
-from safePortfolio import enough_assets
+from safePortfolio import *
 
 
 # ------------ GET ASSETS --------------
@@ -36,6 +36,7 @@ port = jsonToPortfolio(json_port, "2015-06-01")
 enough_assets(port)
 is_uniq_compo(port)
 check_nav(PORTFOLIO_ID)
+check_actions(port)
 
 
 

@@ -9,7 +9,7 @@ from vars import URL, AUTH
 
 def get_asset(assetId, date=None, full_response=False):
     parameters = {'date': date, 'fullResponse': full_response}
-    res = requests.get(URL + "/asset/" + assetId,
+    res = requests.get(URL + "/asset/" + str(assetId),
                        params=parameters,
                        auth=AUTH,
                        verify=False)
