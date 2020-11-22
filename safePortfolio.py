@@ -9,9 +9,10 @@ from vars import *
 
 def enough_assets(portfolio):
     count = 0
-    for elt in portfolio.values["2016-06-01"]:
-        if elt.asset:
-            count += elt.asset.quantity
+    if "2016-06-01" in portfolio.values:
+        for elt in portfolio.values["2016-06-01"]:
+            if elt.asset:
+                count += elt.asset.quantity
             
     if count > 15 and count < 40:
         print("La quantité d'action pour ce portfolio est correcte")
@@ -22,7 +23,7 @@ def enough_assets(portfolio):
 
 
 def is_uniq_compo(portfolio):
-    if portfolio.values["2016-06-01"]:
+    if "2016-06-01" in portfolio.values:
         print("Ce portefeuille est une composition unique du 2016-06-01")
         return True
     
@@ -33,19 +34,20 @@ def is_uniq_compo(portfolio):
 def sum_nav(portfolio):
     my_sum = 0
     my_assets = {}
-    for elt in portfolio.values["2016-06-01"]:
-        if elt.asset:
-            quotes = asset_to_quotes(elt.asset.asset, True)
-            for quote in quotes:
-                new_nav = float(quote.nav['value'].replace(",", "."))
-                my_sum += new_nav * elt.asset.quantity
-                
-                tupple = (new_nav, elt.asset.quantity)
-                if elt.asset.asset in my_assets:
-                    my_assets[elt.asset.asset].append(tupple)
+    if "2016-06-01" in portfolio.values:
+        for elt in portfolio.values["2016-06-01"]:
+            if elt.asset:
+                quotes = asset_to_quotes(elt.asset.asset, True)
+                for quote in quotes:
+                    new_nav = float(quote.nav['value'].replace(",", "."))
+                    my_sum += new_nav * elt.asset.quantity
                     
-                else:
-                    my_assets[elt.asset.asset] = [tupple]
+                    tupple = (new_nav, elt.asset.quantity)
+                    if elt.asset.asset in my_assets:
+                        my_assets[elt.asset.asset].append(tupple)
+                        
+                    else:
+                        my_assets[elt.asset.asset] = [tupple]
                 
     return (my_sum, my_assets)
 
