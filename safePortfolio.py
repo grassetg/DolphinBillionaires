@@ -8,6 +8,12 @@ from vars import *
 
 
 def enough_assets(portfolio):
+    """
+    Check if there is between 15 and 40 assets in the portfolio.
+    :param portfolio: a portfolio object
+    :return: a boolean
+    """
+    
     count = 0
     if "2016-06-01" in portfolio.values:
         for elt in portfolio.values["2016-06-01"]:
@@ -23,6 +29,12 @@ def enough_assets(portfolio):
 
 
 def is_uniq_compo(portfolio):
+    """
+    Check if the portfolio's date is "2016-06-01".
+    :param portfolio: a portfolio object
+    :return: a boolean
+    """
+    
     if "2016-06-01" in portfolio.values:
         print("Ce portefeuille est une composition unique du 2016-06-01")
         return True
@@ -32,6 +44,16 @@ def is_uniq_compo(portfolio):
 
 
 def sum_nav(portfolio):
+    """
+    Calculate the sum of navs of all the asset from a portfolio and send a 
+    dictionary of informations.
+    :param portfolio: a portfolio object
+    :return:
+        A tupple with:
+        -the sum of all of nav of the portfolio
+        -a dictionary of tupples {asset_id: (nav, quantity),..., (nav, quantity)}
+    """
+    
     my_sum = 0
     my_assets = {}
     if "2016-06-01" in portfolio.values:
@@ -53,6 +75,13 @@ def sum_nav(portfolio):
 
 
 def check_nav(port_ID):
+    """
+    Check if there each nav of portfolio represent a pourcent between 1% to 10%
+    of the total nav.
+    :param port_ID: an int
+    :return: a boolean
+    """
+    
     str_port = get_portfolio(port_ID)
     json_port = json.loads(str_port)
     portfolio = jsonToPortfolio(json_port)
@@ -73,16 +102,22 @@ def check_nav(port_ID):
 
 
 def check_actions(portfolio):
+    """
+    Check if the quantity of actions is at least 50% of all the portfolio's assets.
+    :param portfolio: a portfolio object
+    :return: a boolean
+    """
+    
     total_count = 0
     action_count = 0
     if "2016-06-01" in portfolio.values:
         for elt in portfolio.values["2016-06-01"]:
-            total_count += 1
+            total_count += elt.asset.quantity
             
             str_asset = get_asset(elt.asset.asset)
             json_asset = json.loads(str_asset)
             if json_asset['TYPE'] == "STOCK":
-                action_count += 1
+                action_count += elt.asset.quantity
                 
     if total_count == 0 or action_count / total_count < 0.5:
         print("Il n'y a PAS au moins 50% d'action dans ce portefeuille")
