@@ -74,20 +74,16 @@ def sum_nav(portfolio):
     return (my_sum, my_assets)
 
 
-def check_nav(port_ID):
+def check_nav(portfolio):
     """
     Check if there each nav of portfolio represent a pourcent between 1% to 10%
     of the total nav.
-    :param port_ID: an int
+    :param portfolio: an portfolio object
     :return: a boolean
     """
     
-    str_port = get_portfolio(port_ID)
-    json_port = json.loads(str_port)
-    portfolio = jsonToPortfolio(json_port)
-    
     my_sum, my_assets = sum_nav(portfolio)
-    print(my_sum)
+    #print(my_sum, my_assets)
     for asset in my_assets:
         num = 0
         for nav, quantity in my_assets[asset]:
