@@ -7,14 +7,15 @@ from safePortfolio import *
 
 
 # ------------ GET ASSETS --------------
-#actif = get_assets()
-#allActif = json.loads(actif)
+actif = get_assets()
+allActif = json.loads(actif)
         
 # print("Mes actifs")
 # print(actif)
 
 # ------------ GET QUOTES -------------
 #print("Mes quotes")
+print(allActif)
 #print(allActif[0]['ASSET_DATABASE_ID']['value'])
 #allQuotes = asset_to_quotes(allActif[1], False)
 #allQuotes[0].print_info()
