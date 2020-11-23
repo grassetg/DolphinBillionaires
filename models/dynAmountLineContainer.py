@@ -22,6 +22,11 @@ class DynAmountLineContainer:
         self.asset = asset_
         self.currency = currency_
 
+    def toJson(self):
+        if not self.asset:
+            return {"currency": json.dumps(self.currency.__dict__)}
+        else:
+            return {"asset": json.dumps(self.asset.__dict__)}
 
 def jsonToDynAmountLineContainer(jsonContainer):
     dictionary = dict()

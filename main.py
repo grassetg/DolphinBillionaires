@@ -52,7 +52,13 @@ porfolios = init_ptfs(10)
 def get_best_candidate(portfolios):
     notes = []
     for portfolio in portfolios:
-        notes.append(get_portfolio_sharpe(portfolio, "2016-06-01"))
+        print(portfolio.toJson())
+        raise Exception("stop")
+        put_portfolio(PORTFOLIO_ID, portfolio.toJson())
+        print("PUT PORTFOLIO")
+        sharpe = json.loads(get_sharpe(PORTFOLIO_ID, start_date="2016-06-01", end_date_="2020-09-30"))
+        notes.append(sharpe["1822"]["12"]["value"])
+        print("GOT SHARPE")
 
     index = notes.index(max(notes))
     print("all : " + str(notes))
