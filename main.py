@@ -13,6 +13,7 @@ assets_id = []
 assets_quantity = {}
 nb_asset = len(assets)
 
+
 for i in range(nb_asset):
     id = int(assets[i]["ASSET_DATABASE_ID"]["value"])
     assets_id.append(id)
