@@ -59,7 +59,7 @@ def sum_nav(portfolio):
     if "2016-06-01" in portfolio.values:
         for elt in portfolio.values["2016-06-01"]:
             if elt.asset:
-                quotes = asset_to_quotes(elt.asset.asset, True)
+                quotes = asset_to_quotes(elt.asset.asset, True, "2016-06-01", "2016-06-01")
                 for quote in quotes:
                     new_nav = float(quote.nav['value'].replace(",", "."))
                     my_sum += new_nav * elt.asset.quantity
@@ -87,6 +87,7 @@ def check_nav(port_ID):
     portfolio = jsonToPortfolio(json_port)
     
     my_sum, my_assets = sum_nav(portfolio)
+    print(my_sum)
     for asset in my_assets:
         num = 0
         for nav, quantity in my_assets[asset]:
@@ -110,11 +111,11 @@ def check_actions(portfolio):
     
     total_count = 0
     action_count = 0
-    if "2016-06-01" in portfolio.values:
-        for elt in portfolio.values["2016-06-01"]:
+    for asset_date in portfolio.values:
+        for elt in portfolio.values[asset_date]:
             total_count += elt.asset.quantity
             
-            str_asset = get_asset(elt.asset.asset)
+            str_asset = get_asset(elt.asset.asset, asset_date)
             json_asset = json.loads(str_asset)
             if json_asset['TYPE'] == "STOCK":
                 action_count += elt.asset.quantity
