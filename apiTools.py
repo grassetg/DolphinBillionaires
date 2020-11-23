@@ -50,8 +50,8 @@ def get_asset_attribute(assetId, attributeName, date=None, full_response=False):
     return res.content.decode('utf-8')
 
 
-def get_quotes(data_id):
-    parameters = {'id': int(data_id), 'start_quotes': "1985-04-12", 'end_quotes': "2020-11-17"}
+def get_quotes(data_id, start_date: str = "1985-04-12", end_date: str = "2020-11-17"):
+    parameters = {'id': int(data_id), 'start_date': start_date, 'end_date': end_date}
     res = requests.get(URL + "/asset/" + str(data_id) + "/quote",
                        params=parameters,
                        auth=AUTH,
@@ -120,6 +120,16 @@ def post_ratios(ratio: RatioParamMultiAsset, fullResponse: bool = False):
         return res
 
     return res.content.decode('utf-8')
+
+
+def get_portfolio_sharpe(portfolio, porfolioDate: str = "2016-06-01", benchmark: int = None, start_date: str = None,
+                         end_date_: str = None, frequency_: str = None, fullResponse: bool = False):
+    assets = []
+    for container in portfolio.values[porfolioDate]:
+        if container.asset is not None:
+            assets.append(container.asset.asset)
+
+    return get_sharpe(assets, benchmark, start_date, end_date_, frequency_, fullResponse)
 
 
 def get_sharpe(asset: List[int], benchmark: int = None, start_date: str = None,
