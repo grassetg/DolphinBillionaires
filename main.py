@@ -1,5 +1,6 @@
 import json
 from random import randint
+from time import strptime
 
 from models import *
 from apiTools import *
@@ -7,24 +8,8 @@ from vars import *
 from safePortfolio import *
 from copy import deepcopy
 from safePortfolio import enough_assets
-    
-print("--- START ---")
 
-assets = json.loads(get_assets(("ASSET_DATABASE_ID", "asset_fund_info_decimalisation")))
-assets_id = []
-assets_quantity = {}
-nb_asset = len(assets)
-
-for i in range(nb_asset):
-    id = int(assets[i]["ASSET_DATABASE_ID"]["value"])
-    assets_id.append(id)
-    if "asset_fund_info_decimalisation" in assets[i]:
-        assets_quantity[id] = assets[i]["asset_fund_info_decimalisation"]["value"]
-
-
-
-
-def ptfs_mutation(ptf, nb : int = 50):
+def ptfs_mutation(ptf, nb: int = 50):
     ptfs = []
     ptfs.append(ptf)
     len_ptf = len(ptf)
@@ -34,19 +19,18 @@ def ptfs_mutation(ptf, nb : int = 50):
     for i in range(nb):
         list_id = deepcopy(ptf)
         asset_id_s = deepcopy(asset_id_not_in_ptf)
-        for j in range(randint(1, 5)): #choisir le nombre d'asset qui vont changer
+        for j in range(randint(1, 5)):  # choisir le nombre d'asset qui vont changer
             change_in = randint(0, len_ptf)
             if change_in == len_ptf:
-                choice = randint(0, nb_asset - 1 - j)
+                choice = randint(0, nb_asset_id - 1 - j)
                 list_id.append(asset_id_s[choice])
-                asset_id_s.pop(choice)    
-            else :
-                choice = randint(0, nb_asset - 1 - j)
+                asset_id_s.pop(choice)
+            else:
+                choice = randint(0, nb_asset_id - 1 - j)
                 list_id[change_in] = asset_id_s[choice]
                 asset_id_s.pop(choice)
-        ptfs.append(list_id)                
+        ptfs.append(list_id)
     return ptfs
-
 
 
 def init_ptfs(nb: int = 50):
@@ -57,7 +41,7 @@ def init_ptfs(nb: int = 50):
         asset_id_copy = deepcopy(assets_id)
         values = []
         for j in range(randint(15, 30)):
-            choice = randint(0, nb_asset - 1 - j)
+            choice = randint(0, nb_asset_id - 1 - j)
             asset_id = asset_id_copy[choice]
             list_id.append(asset_id)
             asset_id_copy.pop(choice)
@@ -72,34 +56,16 @@ def init_ptfs(nb: int = 50):
     return ptfs, ptfs_id
 
 
-(porfolios, porfolios_id) = init_ptfs(3)
-
-
-'''
-print(porfolios)
-print()
-print(porfolios_id[0])
-print()
-mut_porfolio = ptfs_mutation(porfolios_id[0],1)
-print(mut_porfolio[1])
-'''
-
-#Rle problème st qu'on a 0 asset dans notre ptf
-port = json.dumps({"label":"EPITA_PTF_3","currency":{"code":"EUR"},"type":"front","values":{"2016-06-01":[{"asset":{"asset":1845,"quantity":1.0}}]}})
-print(put_portfolio(1822, port))
-print(get_portfolio(str(1822)))
-
-
-def get_best_candidate(portfolios):
+def get_best_candidate(candidates):
     notes = []
-    for portfolio in portfolios:
-        print("I AM HERE")
-        json_portfolio = portfolio.toJson()
-        print(json_portfolio)
-        #raise Exception("stop")
+    for candidate in candidates:
+        json_portfolio = json.dumps(candidate.toJson())
+        # raise Exception("stop")
+
         put_portfolio(PORTFOLIO_ID, json_portfolio)
         print("PUT PORTFOLIO")
-        sharpe = json.loads(get_sharpe(PORTFOLIO_ID, start_date="2016-06-01", end_date_="2020-09-30"))
+
+        sharpe = json.loads(get_sharpe([PORTFOLIO_ID], start_date="2016-06-01", end_date_="2020-09-30"))
         notes.append(sharpe["1822"]["12"]["value"])
         print("GOT SHARPE")
 
@@ -110,10 +76,30 @@ def get_best_candidate(portfolios):
     return index
 
 
-print(porfolios[get_best_candidate(porfolios)])
 
-#port = json.dumps({"label":"EPITA_PTF_3","currency":{"code":"EUR"},"type":"front","values":{"2016-06-01":[{"asset":{"asset":1845,"quantity":1.0}}]}})
-#put_portfolio(1822, compo)
+print("--- START ---")
 
-# creation du portefeuille
-# ptf = Portfolio(vars.PORTFOLIO_NAME, values_, currency_ , type_)
+assets = json.loads(get_assets(("ASSET_DATABASE_ID", "asset_fund_info_decimalisation", "FIRST_QUOTE_DATE")))
+assets_id = []
+assets_quantity = {}
+nb_asset = len(assets)
+
+for i in range(nb_asset):
+    firstQuoteDate = strptime(assets[i]["FIRST_QUOTE_DATE"]["value"], "%Y-%m-%d")
+    assetId = int(assets[i]["ASSET_DATABASE_ID"]["value"])
+
+    # Test whether the asset first quote is after the portfolio date. If it is skip this asset
+    if firstQuoteDate >= strptime("2016-06-01", "%Y-%m-%d"):
+        continue
+
+    assets_id.append(assetId)
+
+    if "asset_fund_info_decimalisation" in assets[i]:
+        assets_quantity[assetId] = assets[i]["asset_fund_info_decimalisation"]["value"]
+
+nb_asset_id = len(assets_id)
+
+
+(portfolios, portfolios_id) = init_ptfs(3)
+bestCandidateIndex = get_best_candidate(portfolios)
+print("Le meilleur portefeuille a pour indice : ", bestCandidateIndex)
