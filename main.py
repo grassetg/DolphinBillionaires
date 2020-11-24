@@ -7,7 +7,28 @@ from apiTools import *
 from vars import *
 from safePortfolio import *
 from copy import deepcopy
-from safePortfolio import enough_assets
+from safePortfolio import *
+
+assets = json.loads(get_assets(("ASSET_DATABASE_ID", "asset_fund_info_decimalisation", "FIRST_QUOTE_DATE")))
+assets_id = []
+assets_quantity = {}
+nb_asset = len(assets)
+
+for i in range(nb_asset):
+    firstQuoteDate = strptime(assets[i]["FIRST_QUOTE_DATE"]["value"], "%Y-%m-%d")
+    assetId = int(assets[i]["ASSET_DATABASE_ID"]["value"])
+
+    # Test whether the asset first quote is after the portfolio date. If it is skip this asset
+    if firstQuoteDate >= strptime("2016-06-01", "%Y-%m-%d"):
+        continue
+
+    assets_id.append(assetId)
+
+    if "asset_fund_info_decimalisation" in assets[i]:
+        assets_quantity[assetId] = assets[i]["asset_fund_info_decimalisation"]["value"]
+
+nb_asset_id = len(assets_id)
+
 
 def ptfs_mutation(ptf, nb: int = 50):
     ptfs = []
@@ -76,30 +97,19 @@ def get_best_candidate(candidates):
     return index
 
 
+def algorithm():
+    print("--- START ---")
 
-print("--- START ---")
-
-assets = json.loads(get_assets(("ASSET_DATABASE_ID", "asset_fund_info_decimalisation", "FIRST_QUOTE_DATE")))
-assets_id = []
-assets_quantity = {}
-nb_asset = len(assets)
-
-for i in range(nb_asset):
-    firstQuoteDate = strptime(assets[i]["FIRST_QUOTE_DATE"]["value"], "%Y-%m-%d")
-    assetId = int(assets[i]["ASSET_DATABASE_ID"]["value"])
-
-    # Test whether the asset first quote is after the portfolio date. If it is skip this asset
-    if firstQuoteDate >= strptime("2016-06-01", "%Y-%m-%d"):
-        continue
-
-    assets_id.append(assetId)
-
-    if "asset_fund_info_decimalisation" in assets[i]:
-        assets_quantity[assetId] = assets[i]["asset_fund_info_decimalisation"]["value"]
-
-nb_asset_id = len(assets_id)
+    (portfolios, portfolios_id) = init_ptfs(3)
+    bestCandidateIndex = get_best_candidate(portfolios)
+    print("Le meilleur portefeuille a pour indice : ", bestCandidateIndex)
+    bestCandidate = portfolios[bestCandidateIndex]
+    print(bestCandidate)
+    put_portfolio(PORTFOLIO_ID, json.dumps(bestCandidate.toJson()))
+    print("first criteria : " + str(enough_assets(bestCandidate)))
+    print("second criteria : " + str(check_actions(bestCandidate)))
+    print("third criteria : " + str(check_nav(bestCandidate)))
+    print("--- END ---")
 
 
-(portfolios, portfolios_id) = init_ptfs(3)
-bestCandidateIndex = get_best_candidate(portfolios)
-print("Le meilleur portefeuille a pour indice : ", bestCandidateIndex)
+algorithm()
