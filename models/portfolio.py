@@ -14,7 +14,7 @@ class Portfolio:
     type: Type de portfolio DynAmount : soit "front" soit "back"
     """
 
-    def __init__(self, label_: str, values_: List[DynAmountLineContainer], currency_: str = "EUR", type_: str = None):
+    def __init__(self, label_: str, values_: List[DynAmountLineContainer], currency_: str = "EUR", type_: str = "front"):
 
         if type_ != "front" and type_ != "ack":
             raise Exception("A portfolio's type must be \"front\" or \"back\"?")
@@ -29,7 +29,10 @@ class Portfolio:
         self.values = {"2016-06-01": values_}
 
     def toJson(self):
-        return json.dumps(self, default=lambda o: o.__dict__)
+        valuesJson = {"2016-06-01" : []}
+        for container in self.values["2016-06-01"]:
+            valuesJson["2016-06-01"].append(container.toJson())
+        return {"currency" : {"code" : self.currency }, "label": self.label, "type" : self.type}
 
 
 def jsonToPortfolio(jsonPortfolio, date: str = "2016-06-01"):

@@ -27,13 +27,13 @@ class Quote:
         print("close " + str(self.volume))
 
     
-def asset_to_quotes(asset, in_portfolio):
+def asset_to_quotes(asset, in_portfolio, start_date: str = "1985-04-12", end_date: str = "2020-11-17"):
     obj_quotes = []
 
     if in_portfolio:
-        result = get_quotes(asset)
+        result = get_quotes(asset, start_date, end_date)
     else:
-        result = get_quotes(asset['ASSET_DATABASE_ID']['value'])
+        result = get_quotes(asset['ASSET_DATABASE_ID']['value'], start_date, end_date)
         
     quotes = json.loads(result)
 
