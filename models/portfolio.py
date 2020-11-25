@@ -41,6 +41,7 @@ def jsonToPortfolio(jsonPortfolio, date: str = "2016-06-01"):
         dictionary = jsonPortfolio
 
     values = []
+    print(date)
     for value in dictionary["values"][date]:
         container = jsonToDynAmountLineContainer(value)
         values.append(container)

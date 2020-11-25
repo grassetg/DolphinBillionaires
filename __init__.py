@@ -7,3 +7,4 @@ from models.quote import *
 from models.asset import *
 from models.ratioParamMultiAsset import *
 from safePortfolio import *
+from test.safePortfolioTests import *
