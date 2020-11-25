@@ -1,7 +1,11 @@
 import json
 import unittest
 from models import DynAmountLineContainer as Container, DynAmountLineAsset as Asset, \
-    DynAmountLineCurrency as Currency, jsonToDynAmountLineAsset, jsonToDynAmountLineCurrency, jsonToDynAmountLineContainer
+    DynAmountLineCurrency as Currency
+from models import jsonToDynAmountLineAsset, jsonToDynAmountLineCurrency, \
+    jsonToDynAmountLineContainer, createAssetContainer, createCurrencyContainer, Portfolio
+from vars import PORTFOLIO_NAME
+
 
 class PortfolioUnitTest(unittest.TestCase):
     def test_dynAmountLineContainer_happy_path(self):
@@ -85,6 +89,45 @@ class PortfolioUnitTest(unittest.TestCase):
 
         self.assertEqual(containerCurrency1.currency.amount, containerCurrency2.currency.amount)
         self.assertEqual(containerCurrency1.currency.currency, containerCurrency2.currency.currency)
+
+    def test_currency_container_to_json(self):
+        currency = createCurrencyContainer(42.0)
+        currencyDict = currency.toJson()
+
+        # Dict test
+        self.assertIsNotNone(currencyDict.get("currency", None))
+        self.assertEqual(currencyDict["currency"].get("currency", None), "EUR")
+        self.assertEqual(currencyDict["currency"].get("amount", None), 42.0)
+
+    def test_asset_container_to_json(self):
+        asset = createAssetContainer(2017, 1)
+        assetDict = asset.toJson()
+
+        # Dict test
+        self.assertIsNotNone(assetDict.get("asset", None))
+        self.assertEqual(assetDict["asset"].get("asset", None), 2017)
+        self.assertEqual(assetDict["asset"].get("quantity", None), 1)
+
+    def test_portfolio_to_json(self):
+        currency1 = createCurrencyContainer(42.0)
+        currency2 = createCurrencyContainer(2531.0)
+        asset1 = createAssetContainer(2017, 5)
+        asset2 = createAssetContainer(1760, 1)
+        portfolio = Portfolio(PORTFOLIO_NAME, [asset1, currency1, asset2, currency2])
+        portfolioDict = portfolio.toJson()
+
+        self.assertEqual(portfolioDict.get("label", None), PORTFOLIO_NAME)
+        self.assertIsNotNone(portfolioDict.get("currency", None))
+        self.assertEqual(portfolioDict["currency"].get("code", None), "EUR")
+        self.assertEqual(portfolioDict.get("type", None), "front")
+
+        # values field
+        self.assertIsNotNone(portfolioDict.get("values", None))
+        self.assertIsNotNone(portfolioDict["values"].get("2016-06-01"))
+        self.assertEqual(portfolioDict["values"]["2016-06-01"][0], asset1.toJson())
+        self.assertEqual(portfolioDict["values"]["2016-06-01"][1], currency1.toJson())
+        self.assertEqual(portfolioDict["values"]["2016-06-01"][2], asset2.toJson())
+        self.assertEqual(portfolioDict["values"]["2016-06-01"][3], currency2.toJson())
 
 
 if __name__ == '__main__':
