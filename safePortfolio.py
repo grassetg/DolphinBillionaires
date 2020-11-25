@@ -83,14 +83,15 @@ def check_nav(portfolio):
     """
 
     my_sum, my_assets = sum_nav(portfolio)
-    #print(my_sum, my_assets)
+    # print(my_sum, my_assets)
     for asset in my_assets:
         num = 0
         for nav, quantity in my_assets[asset]:
             num += nav * quantity
 
         pourcent = (num * 100) / my_sum
-        if  1 > pourcent or pourcent > 10:
+        print(pourcent)
+        if 1 > pourcent or pourcent > 10:
             print("Le portefeuille ne respecte PAS la condition des navs")
             return False
 
@@ -111,9 +112,9 @@ def check_actions(portfolio):
         for elt in portfolio.values[asset_date]:
             total_count += elt.asset.quantity
 
-            str_asset = get_asset(elt.asset.asset, asset_date)
+            str_asset = get_asset(elt.asset.asset, "TYPE", asset_date)
             json_asset = json.loads(str_asset)
-            if json_asset['TYPE'] == "STOCK":
+            if json_asset["TYPE"]["value"] == "STOCK":
                 action_count += elt.asset.quantity
 
     if total_count == 0 or action_count / total_count < 0.5:
@@ -122,9 +123,3 @@ def check_actions(portfolio):
 
     print("Il y a au moins 50% d'action dans ce portefeuille")
     return True
-
-
-
-
-
-

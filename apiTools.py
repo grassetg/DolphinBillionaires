@@ -8,8 +8,9 @@ from models.ratioParamMultiAsset import RatioParamMultiAsset
 from vars import URL, AUTH
 
 
-def get_asset(assetId, date=None, full_response=False):
-    parameters = {'date': date, 'fullResponse': full_response}
+def get_asset(assetId, columns=("ASSET_DATABASE_ID", "LABEL", "TYPE", "LAST_CLOSE_VALUE_IN_CURR"), date=None,
+              full_response=False):
+    parameters = {'date': date, 'fullResponse': full_response, 'columns': columns}
     res = requests.get(URL + "/asset/" + str(assetId),
                        params=parameters,
                        auth=AUTH,
