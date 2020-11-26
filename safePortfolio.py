@@ -90,7 +90,6 @@ def check_nav(portfolio):
             num += nav * quantity
 
         pourcent = (num * 100) / my_sum
-        print(pourcent)
         if 1 > pourcent or pourcent > 10:
             print("Le portefeuille ne respecte PAS la condition des navs")
             return False
