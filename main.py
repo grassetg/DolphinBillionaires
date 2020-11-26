@@ -78,6 +78,7 @@ def init_ptfs(nb: int = 50):
 
 
 def get_best_candidate(candidates):
+    currentPortfolio = get_portfolio(PORTFOLIO_ID)
     notes = []
     for candidate in candidates:
         json_portfolio = json.dumps(candidate.toJson())
@@ -94,21 +95,32 @@ def get_best_candidate(candidates):
     print("all : " + str(notes))
     print()
     print("max : " + str(notes[index]))
+    put_portfolio(PORTFOLIO_ID, currentPortfolio)
     return index
 
 
 def algorithm():
     print("--- START ---")
+    currentSharpe = json.loads(get_sharpe([PORTFOLIO_ID], start_date="2016-06-01", end_date_="2020-09-30"))["1822"]["12"]["value"]
 
-    (portfolios, portfolios_id) = init_ptfs(3)
+    (portfolios, portfolios_id) = init_ptfs(10)
     bestCandidateIndex = get_best_candidate(portfolios)
     print("Le meilleur portefeuille a pour indice : ", bestCandidateIndex)
     bestCandidate = portfolios[bestCandidateIndex]
-    print(bestCandidate)
-    put_portfolio(PORTFOLIO_ID, json.dumps(bestCandidate.toJson()))
-    print("first criteria : " + str(enough_assets(bestCandidate)))
-    print("second criteria : " + str(check_actions(bestCandidate)))
-    print("third criteria : " + str(check_nav(bestCandidate)))
+    print(bestCandidate.toJson())
+    print()
+
+    # Criteria tests
+    enough_assets(bestCandidate)
+    check_actions(bestCandidate)
+    check_nav(bestCandidate)
+    print()
+
+    print("Current Sharpe is", str(currentSharpe))
+    wantPut = input("Do you want to put this candidate ? (y/n)")
+    if wantPut == "y" or wantPut == "Y":
+        put_portfolio(PORTFOLIO_ID, json.dumps(bestCandidate.toJson()))
+        print("Put candidate")
     print("--- END ---")
 
 
