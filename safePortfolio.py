@@ -18,7 +18,7 @@ def enough_assets(portfolio):
     if "2016-06-01" in portfolio.values:
         for elt in portfolio.values["2016-06-01"]:
             if elt.asset:
-                count += int(elt.asset.quantity)
+                count += 1
 
     if count > 15 and count < 40:
         print("La quantité d'action pour ce portfolio est correcte")
@@ -34,7 +34,7 @@ def is_uniq_compo(portfolio):
     :param portfolio: a portfolio object
     :return: a boolean
     """
-
+        
     if "2016-06-01" in portfolio.values:
         print("Ce portefeuille est une composition unique du 2016-06-01")
         return True
