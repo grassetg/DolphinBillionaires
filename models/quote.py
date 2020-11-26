@@ -49,7 +49,7 @@ def asset_to_quotes(asset, in_portfolio, start_date: str = "1985-04-12", end_dat
         pl = quote.get('pl', 'none')
         ret = quote.get('ret', 'none')
         volume = quote.get('volume', 'none')
-
+            
         new_quote = Quote(close, coupon, date, gross, high, low, nav, op, pl, ret, volume)
         obj_quotes.append(new_quote)
 
