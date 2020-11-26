@@ -7,7 +7,7 @@ from models.quote import asset_to_quotes
 from vars import *
 
 
-def enough_assets(portfolio):
+def enough_assets(portfolio, log=True):
     """
     Check if there is between 15 and 40 assets in the portfolio.
     :param portfolio: a portfolio object
@@ -21,14 +21,16 @@ def enough_assets(portfolio):
                 count += int(elt.asset.quantity)
 
     if count > 15 and count < 40:
-        print("La quantité d'action pour ce portfolio est correcte")
+        if log:
+            print("La quantité d'action pour ce portfolio est correcte")
         return True
 
-    print("La quantité d'action pour ce portfolio n'est PAS correcte")
+    if log:
+        print("La quantité d'action pour ce portfolio n'est PAS correcte")
     return False
 
 
-def is_uniq_compo(portfolio):
+def is_uniq_compo(portfolio, log=True):
     """
     Check if the portfolio's date is "2016-06-01".
     :param portfolio: a portfolio object
@@ -36,14 +38,16 @@ def is_uniq_compo(portfolio):
     """
 
     if "2016-06-01" in portfolio.values:
-        print("Ce portefeuille est une composition unique du 2016-06-01")
+        if log:
+            print("Ce portefeuille est une composition unique du 2016-06-01")
         return True
 
-    print("Ce portefeuille n'est PAS une composition unique du 2016-06-01")
+    if log:
+        print("Ce portefeuille n'est PAS une composition unique du 2016-06-01")
     return False
 
 
-def sum_nav(portfolio):
+def sum_nav(portfolio, log=True):
     """
     Calculate the sum of navs of all the asset from a portfolio and send a 
     dictionary of informations.
@@ -74,7 +78,7 @@ def sum_nav(portfolio):
     return (my_sum, my_assets)
 
 
-def check_nav(portfolio):
+def check_nav(portfolio, log=True):
     """
     Check if there each nav of portfolio represent a pourcent between 1% to 10%
     of the total nav.
@@ -91,14 +95,16 @@ def check_nav(portfolio):
 
         pourcent = (num * 100) / my_sum
         if 1 > pourcent or pourcent > 10:
-            print("Le portefeuille ne respecte PAS la condition des navs")
+            if log:
+                print("Le portefeuille ne respecte PAS la condition des navs")
             return False
 
-    print("Le portefeuille respecte la condition des navs")
+    if log:
+        print("Le portefeuille respecte la condition des navs")
     return True
 
 
-def check_actions(portfolio):
+def check_actions(portfolio, log=True):
     """
     Check if the quantity of actions is at least 50% of all the portfolio's assets.
     :param portfolio: a portfolio object
@@ -117,8 +123,10 @@ def check_actions(portfolio):
                 action_count += elt.asset.quantity
 
     if total_count == 0 or action_count / total_count < 0.5:
-        print("Il n'y a PAS au moins 50% d'action dans ce portefeuille")
+        if log:
+            print("Il n'y a PAS au moins 50% d'action dans ce portefeuille")
         return False
 
-    print("Il y a au moins 50% d'action dans ce portefeuille")
+    if log:
+        print("Il y a au moins 50% d'action dans ce portefeuille")
     return True
