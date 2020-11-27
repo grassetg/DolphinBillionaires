@@ -2,9 +2,22 @@ import json
 
 from models.dynAmountLineAsset import DynAmountLineAsset
 from apiTools import get_portfolio, get_asset
-from models.portfolio import jsonToPortfolio
+from models.portfolio import *
 from models.quote import asset_to_quotes
 from vars import *
+
+
+def portfolioIsValid(portfolio: Portfolio, log: bool = False):
+    nav = check_nav(portfolio, log)
+    actions = False
+    assets = False
+
+    if nav:
+        actions = check_actions(portfolio, log)
+        if actions:
+            assets = enough_assets(portfolio, log)
+
+    return assets and nav and actions
 
 
 def enough_assets(portfolio, log=True):
@@ -14,13 +27,9 @@ def enough_assets(portfolio, log=True):
     :return: a boolean
     """
 
-    count = 0
-    if "2016-06-01" in portfolio.values:
-        for elt in portfolio.values["2016-06-01"]:
-            if elt.asset:
-                count += 1
+    nb_assets = len(portfolio.values["2016-06-01"])
 
-    if count > 15 and count < 40:
+    if nb_assets > 15 and nb_assets < 40:
         if log:
             print("La quantité d'action pour ce portfolio est correcte")
         return True
@@ -36,7 +45,7 @@ def is_uniq_compo(portfolio, log=True):
     :param portfolio: a portfolio object
     :return: a boolean
     """
-        
+
     if "2016-06-01" in portfolio.values:
         if log:
             print("Ce portefeuille est une composition unique du 2016-06-01")
@@ -58,7 +67,7 @@ def sum_nav(portfolio, log=True):
         -a dictionary of tupples {asset_id: (nav, quantity),..., (nav, quantity)}
     """
 
-    my_sum = 0
+    my_sum = 0.0
     my_assets = {}
     if "2016-06-01" in portfolio.values:
         for elt in portfolio.values["2016-06-01"]:
@@ -66,7 +75,7 @@ def sum_nav(portfolio, log=True):
                 quotes = asset_to_quotes(elt.asset.asset, True, "2016-06-01", "2016-06-01")
                 for quote in quotes:
                     new_nav = float(quote.nav['value'].replace(",", "."))
-                    my_sum += new_nav * elt.asset.quantity
+                    my_sum += new_nav * float(elt.asset.quantity)
 
                     tupple = (new_nav, elt.asset.quantity)
                     if elt.asset.asset in my_assets:
@@ -91,7 +100,7 @@ def check_nav(portfolio, log=True):
     for asset in my_assets:
         num = 0
         for nav, quantity in my_assets[asset]:
-            num += nav * quantity
+            num += float(nav) * float(quantity)
 
         pourcent = (num * 100) / my_sum
         if 1 > pourcent or pourcent > 10:
@@ -115,7 +124,7 @@ def check_actions(portfolio, log=True):
     action_count = 0
     for asset_date in portfolio.values:
         for elt in portfolio.values[asset_date]:
-            total_count += elt.asset.quantity
+            total_count += int(elt.asset.quantity)
 
             str_asset = get_asset(elt.asset.asset, "TYPE", asset_date)
             json_asset = json.loads(str_asset)

@@ -24,7 +24,7 @@ def get_asset(assetId, columns=("ASSET_DATABASE_ID", "LABEL", "TYPE", "LAST_CLOS
 
 
 def get_assets(columns=("ASSET_DATABASE_ID", "LABEL", "TYPE", "LAST_CLOSE_VALUE_IN_CURR"),
-               date="2013-06-14", full_response=False):
+               date="2016-06-01", full_response=False):
     parameters = {'date': date, 'fullResponse': full_response, 'columns': columns}
     res = requests.get(URL + '/asset/',
                        params=parameters,
